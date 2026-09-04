@@ -5,7 +5,7 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 
-import './styles.css';
+import '../../styles.css';
 import { Autoplay, Pagination, Navigation } from 'swiper/modules';
 import { FaBarsStaggered } from "react-icons/fa6";
 import logo from '../../assets/img/logo.avif';
