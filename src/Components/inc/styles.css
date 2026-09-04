@@ -1,0 +1,68 @@
+#root {
+    height: 100%;
+}
+
+html,
+body {
+    position: relative;
+    height: 100%;
+}
+
+body {
+    font-family: DM Sans, sans-serif;
+    font-size: 14px;
+    color: #fff;
+    margin: 0;
+    padding: 0;
+}
+
+.swiper {
+    width: 100%;
+    height: 100%;
+}
+
+.swiper-slide {
+    text-align: center;
+    font-size: 12px;
+    /* Center slide text vertically */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.swiper-slide img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+    color: white;
+}
+
+.swiper {
+    --swiper-navigation-size: 12px;
+}
+
+/* ===== Hero slider pagination (xətt stili) ===== */
+.heroSwiper {
+    --swiper-pagination-bottom: 22px;
+    --swiper-pagination-bullet-horizontal-gap: 7px;
+}
+
+.heroSwiper .swiper-pagination-bullet {
+    width: 46px;
+    height: 2px;
+    border-radius: 0;
+    background: #ffffff;
+    opacity: 0.45;
+    vertical-align: middle;
+    transition: opacity 0.3s ease, height 0.3s ease;
+}
+
+.heroSwiper .swiper-pagination-bullet-active {
+    opacity: 1;
+    height: 4px;
+}
