@@ -39,6 +39,7 @@ import PrivacyPolicy from '../pages/PrivacyPolicy'
 import TermsConditions from '../pages/TermsConditions'
 import TrackOrder from '../pages/TrackOrder'
 import ContactUs from '../pages/ContactUs'
+import Error from '../pages/Error'
 function Router() {
     return (
         <>
@@ -81,6 +82,8 @@ function Router() {
                     <Route path="/pages/privacy-policy" element={<PrivacyPolicy />} />
                     <Route path="/pages/terms-and-conditions" element={<TermsConditions />} />
                     <Route path="/pages/contact-us" element={<ContactUs />} />
+                    <Route path="*" element={<Error />} />
+
 
                 </Route>
                 <Route path="/account/login" element={<AuthPage />} />

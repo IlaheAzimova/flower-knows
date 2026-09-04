@@ -461,27 +461,24 @@ function Header() {
                                 <li className="relative group" onMouseEnter={() => openMenu("sale")}>
                                     <Link
                                         to="/collections/sale"
-                                        className={`relative inline-flex items-center py-1 transition-colors duration-200 ${isSaleActive ? 'text-[#c98f92]' : 'text-[#717171]'
-                                            }`}
+                                        className="relative inline-flex items-center justify-center px-4 py-1"
                                     >
-                                        <span className="relative inline-block">
+                                        <span className="relative flex items-center justify-center text-[12px] font tracking-[2.4px] text-[#212326]">
                                             Sale
+
+                                            {/* Əl ilə cızılmış oval SVG */}
                                             <svg
-                                                className={`pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-[calc(100%+30px)] h-[calc(100%+18px)] transition-opacity duration-300 ${isSaleActive || activeMenu === "sale"
-                                                    ? "opacity-100"
-                                                    : "opacity-0 group-hover:opacity-100"
-                                                    }`}
-                                                viewBox="0 0 100 46"
-                                                preserveAspectRatio="none"
+                                                className="absolute pointer-events-none w-[74px] h-[34px] -top-[7px] -left-[18px] text-[#f29ca3] overflow-visible"
+                                                viewBox="0 0 85 38"
                                                 fill="none"
-                                                aria-hidden="true"
+                                                xmlns="http://www.w3.org/2000/svg"
                                             >
                                                 <path
-                                                    d="M 78 7 C 93 11 95 30 73 38 C 47 47 11 42 5 25 C 1 13 21 6 47 5 C 68 4 83 8 90 14"
-                                                    stroke="#dca0a2"
-                                                    strokeWidth="1.4"
+                                                    d="M62.5 4.5C36 1.5 12 6.5 4.5 16C-3 25.5 12 34 38.5 35.5C65 37 81 31.5 82.5 22C84 12.5 67 7 51 6.5"
+                                                    stroke="currentColor"
+                                                    strokeWidth="1.6"
                                                     strokeLinecap="round"
-                                                    vectorEffect="non-scaling-stroke"
+                                                    strokeLinejoin="round"
                                                 />
                                             </svg>
                                         </span>
@@ -489,8 +486,8 @@ function Header() {
 
                                     <div
                                         className={`absolute left-0 top-full z-50 pt-2 transition-all duration-200 ease-out origin-top ${activeMenu === "sale"
-                                            ? "opacity-100 translate-y-0 pointer-events-auto visible"
-                                            : "opacity-0 translate-y-2 pointer-events-none invisible"
+                                                ? "opacity-100 translate-y-0 pointer-events-auto visible"
+                                                : "opacity-0 translate-y-2 pointer-events-none invisible"
                                             }`}
                                     >
                                         <div className="relative bg-[#fbf0f0] w-[160px] px-6 py-3 normal-case tracking-normal shadow-md">
@@ -498,7 +495,9 @@ function Header() {
                                                 <li>
                                                     <Link
                                                         to="/collections/sale"
-                                                        className={`block py-1.5 fk-serif text-[12px] transition-colors ${currentPath === '/collections/sale' ? 'text-[#c98f92] underline decoration-1 underline-offset-4' : 'text-[#4d4a47] hover:text-[#c98f92]'
+                                                        className={`block py-1.5 fk-serif text-[12px] transition-colors ${currentPath === '/collections/sale'
+                                                                ? 'text-[#c98f92] underline decoration-1 underline-offset-4'
+                                                                : 'text-[#4d4a47] hover:text-[#c98f92]'
                                                             }`}
                                                     >
                                                         Up To 50% Off
@@ -507,7 +506,9 @@ function Header() {
                                                 <li>
                                                     <Link
                                                         to="/pages/offers"
-                                                        className={`block py-1.5 fk-serif text-[12px] transition-colors ${currentPath === '/pages/offers' ? 'text-[#c98f92] underline decoration-1 underline-offset-4' : 'text-[#4d4a47] hover:text-[#c98f92]'
+                                                        className={`block py-1.5 fk-serif text-[12px] transition-colors ${currentPath === '/pages/offers'
+                                                                ? 'text-[#c98f92] underline decoration-1 underline-offset-4'
+                                                                : 'text-[#4d4a47] hover:text-[#c98f92]'
                                                             }`}
                                                     >
                                                         Long-term Offer
@@ -517,7 +518,6 @@ function Header() {
                                         </div>
                                     </div>
                                 </li>
-
                                 {/* 6. SHOP ALL */}
                                 <li className="relative group" onMouseEnter={() => openMenu("shopall")}>
                                     <Link
