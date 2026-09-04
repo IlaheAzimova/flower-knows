@@ -78,7 +78,7 @@ function Index() {
 
 
                                         </div>
-                                        <div className='absolute top-160 left-0 right-0 md:top-140 xl:top-110'>
+                                        <div className='absolute top-125 left-0 right-0 md:top-140 xl:top-110'>
                                             <Link
                                                 to="/collections/knight-unicorn-collection"
                                                 className={`inline-block bg-white text-[#3f3c39] font-[600] font uppercase text-[14px]  tracking-[2.5px]  px-8 py-3  transition-opacity duration-300 hover:opacity-80 `}
@@ -117,7 +117,7 @@ function Index() {
                             <div className="flex items-center">
                                 <div className="w-[90%] mx-auto">
                                     <div className="max-w-[560px] relative">
-                                        <div className='absolute top-110 left-0 right-0 xl:top-70 '>
+                                        <div className='absolute top-80 left-0 right-0 xl:top-70 '>
                                             <h2 className={`font text-[34px]  md:text-[48px]  leading-[1.1] mb-5 md:mb-7 text-white`}>
                                                 Knight Unicorn
                                             </h2>
@@ -198,7 +198,7 @@ function Index() {
 
 
                                         </div>
-                                        <div className='absolute top-160 md:top-190 left-0 right-0 xl:top-140'>
+                                        <div className='absolute top-115 md:top-190 left-0 right-0 xl:top-140'>
                                             <Link
                                                 to="/collections/limited-set"
                                                 className={`inline-block bg-white text-[#3f3c39] font-[600] font uppercase text-[14px]  tracking-[2.5px] px-8 py-3  transition-opacity duration-300 hover:opacity-80 `}
@@ -284,4 +284,4 @@ function Index() {
 
 }
 
-export default Index;
+export default Index; 
