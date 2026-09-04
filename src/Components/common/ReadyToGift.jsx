@@ -86,14 +86,15 @@ function ReadyToGift() {
                                                         className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                                                     />
 
-                                                    <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10">
+
+                                                    <div className="absolute top-2 right-2 p-1 sm:top-3 sm:right-3 flex flex-col gap-1 z-10">
                                                         {valueTag && (
-                                                            <span className="bg-[#e8989a] text-white text-[11px] tracking-[1px] uppercase px-2.5 py-1 w-fit font-medium">
+                                                            <span className="bg-[#e8989a] text-white text-[8px] sm:text-[11px] tracking-[0.5px] sm:tracking-[1px] uppercase px-1.5 py-0.5 sm:px-2.5 sm:py-1 w-fit font-medium leading-tight rounded-[2px]">
                                                                 {valueTag}
                                                             </span>
                                                         )}
                                                         {discountPercent > 0 && !valueTag && (
-                                                            <span className="bg-[#e8989a] text-white text-[10px] tracking-[0.5px] uppercase px-2 py-0.5 w-fit font-medium">
+                                                            <span className="bg-[#e8989a] text-white text-[8px] sm:text-[10px] tracking-[0.3px] sm:tracking-[0.5px] uppercase px-1.5 py-0.5 sm:px-2 sm:py-0.5 w-fit font-medium leading-tight rounded-[2px]">
                                                                 {discountPercent}% OFF
                                                             </span>
                                                         )}
