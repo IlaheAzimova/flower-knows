@@ -64,8 +64,8 @@ function Footer() {
 
                     <FooterColumn title="Customer Service">
 
-                        <li><a href="/pages/track-order" className="hover:text-[#c78a99] transition">Track Your Order</a></li>
-                        <li><a href="" className="hover:text-[#c78a99] transition">Help Center</a></li>
+                        <li><Link to="/pages/track-order" className="hover:text-[#c78a99] transition">Track Your Order</Link></li>
+                        <li><Link to="" className="hover:text-[#c78a99] transition">Help Center</Link></li>
                         <li><Link to="" className="hover:text-[#c78a99] transition">Submit a Fake</Link></li>
                     </FooterColumn>
 
