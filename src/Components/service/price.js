@@ -1,4 +1,4 @@
-// Qiymət mətnini təmizləyib rəqəmə çevirir (məs: "$169.00" -> 169)
+// Qiymət mətnini təmizləyib rəqəmə çevirir 
 export const parseMoney = (val) => {
     if (!val) return null;
     const clean = String(val).split('-')[0].replace(/[^0-9.]/g, '').trim();
@@ -6,7 +6,7 @@ export const parseMoney = (val) => {
     return isNaN(num) ? null : num;
 };
 
-// İstənilən məhsulun yekun (endirimli) qiymətini hesablayır
+// endirimli) qiymət
 export const getProductFinalPrice = (product) => {
     if (!product) return 0;
     const firstVariant = product.variants?.[0];
@@ -59,7 +59,7 @@ export const getProductPriceDetails = (product, activeVariantIndex = 0) => {
             ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100)
             : 0);
 
-    // API-dən gələn product.from dəyərini yoxlayırıq (true/false)
+    // API-dən gələn product.from dəyərini yoxlayırıq (
     const isFromPrice = Boolean(product?.from);
 
     return {

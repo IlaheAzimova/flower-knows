@@ -41,7 +41,7 @@ export const CurrencyProvider = ({ children }) => {
         localStorage.setItem('selected_currency', currency.code);
     }, [currency]);
 
-    // Qiyməti seçilmiş valyutaya çevirən funksiya
+
     const formatPrice = (priceInUsd) => {
         if (priceInUsd === null || priceInUsd === undefined || isNaN(priceInUsd)) return '';
         const converted = Number(priceInUsd) * currency.rate;

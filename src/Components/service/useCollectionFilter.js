@@ -12,7 +12,7 @@ export function useCollectionFilter(baseProducts, defaultCategory = 'ALL') {
     const filteredProducts = useMemo(() => {
         let list = [...(baseProducts || [])];
 
-        // 1. Kateqoriya Tab-ı
+        //  Kateqoriya Tab-ı
         if (selectedCategory !== 'ALL') {
             const cleanSelected = selectedCategory.toLowerCase().replace(/[^a-z0-9]/g, '');
 
@@ -32,7 +32,7 @@ export function useCollectionFilter(baseProducts, defaultCategory = 'ALL') {
             });
         }
 
-        // 2. Yan paneldəki Seçilmiş Tiplər (Product Types)
+        // Product Types
         if (selectedTypes.length > 0) {
             list = list.filter((p) => {
                 const cleanCat = (p.category || '').toLowerCase().replace(/[^a-z0-9]/g, '');
@@ -54,7 +54,7 @@ export function useCollectionFilter(baseProducts, defaultCategory = 'ALL') {
             });
         }
 
-        // 3. Qiymət aralığı
+        //  Qiymət aralığı
         if (maxPrice !== null) {
             list = list.filter((p) => {
                 const price = Number(getProductFinalPrice(p)) || 0;
@@ -62,7 +62,7 @@ export function useCollectionFilter(baseProducts, defaultCategory = 'ALL') {
             });
         }
 
-        // 4. Qiymətə görə sıralama
+        //sıralama
         const sorted = [...list];
         if (sortBy === 'price-low') {
             sorted.sort((a, b) => getProductFinalPrice(a) - getProductFinalPrice(b));

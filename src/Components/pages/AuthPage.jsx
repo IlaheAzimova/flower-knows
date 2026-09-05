@@ -5,7 +5,7 @@ import { IoArrowBackOutline } from 'react-icons/io5';
 import logo from '../../assets/img/logo.avif';
 
 function AuthPage() {
-    const [mode, setMode] = useState('login'); // 'login' or 'register'
+    const [mode, setMode] = useState('login');
     const [showPassword, setShowPassword] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
 
