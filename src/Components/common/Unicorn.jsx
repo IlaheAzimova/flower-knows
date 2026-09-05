@@ -1,127 +1,14 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Mousewheel } from 'swiper/modules';
 import { Link } from 'react-router';
-import { TbShoppingBag } from "react-icons/tb";
 import '../../App.css';
 import knight from '../../assets/img/swiper-main.webp';
-import { toSlug } from '../service/slug';
 import { useProducts } from '../context/ProductContext';
-import { useBasket } from '../context/BasketContext';
-import { useCurrency } from '../context/CurrencyContext';
-import { getProductPriceDetails } from '../service/price';
-
-function ProductCard({ product }) {
-    const { openQuickView } = useProducts();
-    const variants = product.variants ?? [];
-    const [active, setActive] = useState(0);
-    const { addToBasket } = useBasket();
-    const { formatPrice } = useCurrency();
-
-    // 1. Aktiv şəkli tapırıq
-    const activeVariant = variants[active];
-    const currentImg = activeVariant?.images?.[0]
-        ?? activeVariant?.img
-        ?? product.images?.[0]
-        ?? product.img
-        ?? "";
-
-    // 2. Qiymət və endirimin hesablanması
-    const { finalPrice, originalPrice, discountPercent, isFromPrice } = getProductPriceDetails(product, active);
-
-    return (
-        <div>
-            {/* Şəkil + Hover elementləri */}
-            <div className="group relative overflow-hidden bg-white aspect-[4/5]">
-                <Link to={`/products/${toSlug(product.title)}`}>
-                    <img
-                        src={currentImg}
-                        alt={product.title}
-                        referrerPolicy="no-referrer"
-                        draggable={false}
-                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                    />
-
-                    {/* Endirim rozeti */}
-                    {discountPercent > 0 && (
-                        <span className="absolute top-3 right-3 bg-[#e8989a] text-white text-[11px] tracking-[1.5px] uppercase px-3 py-1 dmsans z-10 font-medium">
-                            {discountPercent}% OFF
-                        </span>
-                    )}
-
-                    {/* DESKTOP: Choose Options */}
-                    <button
-                        type="button"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            openQuickView(product);
-                        }}
-                        className="hidden lg:block absolute bottom-0 left-0 right-0 bg-[#e8989a] text-white font uppercase text-[12px] tracking-[2px] py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 hover:bg-[#d88080] z-20 cursor-pointer"
-                    >
-                        Choose Options
-                    </button>
-
-                    {/* MOBİL: Səbət ikonu */}
-                    <button
-                        type="button"
-                        aria-label="Add to cart"
-                        onClick={(e) => {
-                            e.preventDefault();
-                            addToBasket(product, 0, 1, false);
-                        }}
-                        className="xl:hidden flex items-center justify-center absolute bottom-3 right-3 w-9 h-9 rounded-full bg-[#dd9c9c] text-white shadow-sm z-20 cursor-pointer"
-                    >
-                        <TbShoppingBag className="text-[18px]" />
-                    </button>
-                </Link>
-            </div>
-
-            {/* Başlıq + Qiymət */}
-            <div className="text-center py-4 px-2">
-                <h3 className="font text-[15px] text-[#212326] mb-2 leading-[1.3] tracking-[1.2px] line-clamp-1">
-                    <Link to={`/products/${toSlug(product.title)}`} className="hover:text-[#c78a99] transition">
-                        {product.title}
-                    </Link>
-                </h3>
-                <p className="font text-[15px]">
-                    {originalPrice !== null && originalPrice > finalPrice && (
-                        <span className="text-[#999] line-through mr-2 text-[14px]">
-                            {formatPrice(originalPrice)}
-                        </span>
-                    )}
-                    {(product.from || isFromPrice) && (
-                        <span className="text-[#c78a99] mr-1 text-[13px]">From </span>
-                    )}
-                    <span className="text-[#c78a99] xl:text-[1.1rem] font-medium">
-                        {formatPrice(finalPrice)}
-                    </span>
-                </p>
-
-                {/* Yalnız rəng variantı (color) olanlarda swatch-lar */}
-                {variants.length > 0 && variants.some(v => v.color) && (
-                    <div className="flex justify-center flex-wrap gap-2 mt-3">
-                        {variants.map((v, i) => (
-                            <button
-                                key={i}
-                                type="button"
-                                onMouseEnter={() => setActive(i)}
-                                onClick={() => setActive(i)}
-                                aria-label={v.name}
-                                title={v.name}
-                                className={`w-4 h-4 rounded-full border border-white transition cursor-pointer ${active === i ? 'ring-2 ring-[#c78a99] ring-offset-1' : 'ring-1 ring-[#ddd] hover:ring-[#c78a99]'
-                                    }`}
-                                style={{ background: v.color || '#fff' }}
-                            />
-                        ))}
-                    </div>
-                )}
-            </div>
-        </div>
-    );
-}
+import ProductCard from '../common/ProductCard';
 
 function Unicorn() {
     const { unicornProducts, loading } = useProducts();
@@ -167,7 +54,7 @@ function Unicorn() {
                             >
                                 {unicornProducts?.map((product) => (
                                     <SwiperSlide key={product.id} className="!h-auto">
-                                        <ProductCard product={product} />
+                                        <ProductCard product={product} bg="bg-white" />
                                     </SwiperSlide>
                                 ))}
                             </Swiper>

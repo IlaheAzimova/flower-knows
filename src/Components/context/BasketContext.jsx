@@ -16,35 +16,70 @@ export function BasketProvider({ children }) {
     }, [basketItems]);
 
     // Səbətə məhsul əlavə etmək
-    const addToBasket = (product, variantIndex = 0, quantity = 1, isGiftWrap = false) => {
+    // Səbətə məhsul əlavə etmək (Həm index, həm obyekt, həm də fərqli adları dəstəkləyir)
+    const addToBasket = (product, variantParam = 0, quantity = 1, isGiftWrap = false) => {
         const variants = product.variants || [];
-        const currentVariant = variants[variantIndex] || null;
+
+        let currentVariant = null;
+        let variantIndex = 0;
+
+        // 1. Əgər 2-ci parametr rəqəmdirsə (index)
+        if (typeof variantParam === 'number') {
+            variantIndex = variantParam;
+            currentVariant = variants[variantIndex] || variants[0] || null;
+        }
+        // 2. Əgər 2-ci parametr birbaşa seçilmiş variant obyektidirsə
+        else if (typeof variantParam === 'object' && variantParam !== null) {
+            currentVariant = variantParam;
+            variantIndex = variants.findIndex(
+                (v) => (v.name && v.name === currentVariant.name) || (v.id && v.id === currentVariant.id)
+            );
+            if (variantIndex === -1) variantIndex = 0;
+        }
+        // 3. Əgər variant adı string kimi gəlibsə (məsələn: "01 Strawberry")
+        else if (typeof variantParam === 'string') {
+            const foundIdx = variants.findIndex((v) => v.name === variantParam || v.title === variantParam);
+            variantIndex = foundIdx !== -1 ? foundIdx : 0;
+            currentVariant = variants[variantIndex] || null;
+        }
+
+        // Əgər yenə də tapılmayıbsa və məhsulun tərkibində variantlar varsa, 1-cini götür
+        if (!currentVariant && variants.length > 0) {
+            currentVariant = variants[0];
+        }
 
         // Qiymət və şəkili götürürük
         const { finalPrice } = getProductPriceDetails(product, variantIndex);
-        const image = currentVariant?.images?.[0] || product.images?.[0] || product.img || '';
 
-        // Eyni məhsulun fərqli variantları qarışmasın deyə xüsusi açar (key) yaradırıq
-        const itemKey = `${product.id}-${currentVariant?.name || 'default'}-${isGiftWrap}`;
+        // API-də şəklin fərqli adlarla gəlmə ehtimalını qarşılayırıq (img, image, images)
+        const image =
+            currentVariant?.images?.[0] ||
+            currentVariant?.img ||
+            currentVariant?.image ||
+            product.images?.[0] ||
+            product.img ||
+            '';
+
+        const variantIdentifier = currentVariant?.name || currentVariant?.title || currentVariant?.id || variantIndex;
+
+        // Eyni məhsulun fərqli variantları qarışmasın deyə açar
+        const itemKey = `${product.id}-${variantIdentifier}-${isGiftWrap}`;
 
         setBasketItems((prevItems) => {
-            // Məhsul artıq səbətdə varmı?
             const existingIndex = prevItems.findIndex((item) => item.key === itemKey);
 
             if (existingIndex !== -1) {
-                // Varsa sayını artırırıq
                 const updatedItems = [...prevItems];
                 updatedItems[existingIndex].quantity += quantity;
                 return updatedItems;
             }
 
-            // Yoxdursa yeni element kimi əlavə edirik
             const newItem = {
                 key: itemKey,
                 id: product.id,
                 title: product.title,
-                variantName: currentVariant?.name || null,
-                variantColor: currentVariant?.color || null,
+                variantName: currentVariant?.name || currentVariant?.title || null,
+                variantColor: currentVariant?.color || currentVariant?.colorCode || null,
                 price: finalPrice,
                 image,
                 quantity,
@@ -53,8 +88,6 @@ export function BasketProvider({ children }) {
 
             return [...prevItems, newItem];
         });
-
-
     };
 
     // Miqdarı dəyişmək (+ və ya -)

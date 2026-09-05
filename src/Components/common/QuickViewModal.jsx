@@ -9,21 +9,24 @@ import { getProductPriceDetails } from '../service/price';
 import { useBasket } from '../context/BasketContext';
 
 function QuickViewModal() {
-    const { quickViewProduct, closeQuickView } = useProducts();
+    const { quickViewProduct, quickViewInitialVariant = 0, closeQuickView } = useProducts();
     const { formatPrice } = useCurrency();
+    const { addToBasket } = useBasket();
 
     const [activeVariant, setActiveVariant] = useState(0);
     const [activeImg, setActiveImg] = useState(0);
     const [qty, setQty] = useState(1);
     const [descOpen, setDescOpen] = useState(false);
-    const { addToBasket } = useBasket();
 
+    // Modal açılanda və ya ilkin variant dəyişəndə state-ləri sıfırla
     useEffect(() => {
-        setActiveVariant(0);
-        setActiveImg(0);
-        setQty(1);
-        setDescOpen(false);
-    }, [quickViewProduct]);
+        if (quickViewProduct) {
+            setActiveVariant(quickViewInitialVariant || 0);
+            setActiveImg(0);
+            setQty(1);
+            setDescOpen(false);
+        }
+    }, [quickViewProduct, quickViewInitialVariant]);
 
     if (!quickViewProduct) return null;
 
@@ -40,8 +43,12 @@ function QuickViewModal() {
 
     const mainImg = currentImages[activeImg] || currentImages[0] || '';
 
+    // Detal səhifəsinə seçilmiş variant ilə keçid
+    const fullDetailsUrl = `/products/${toSlug(quickViewProduct.title)}?variant=${activeVariant}`;
+
     return (
         <div className="fixed inset-0 z-[999] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm">
+            {/* BACKDROP */}
             <div className="absolute inset-0" onClick={closeQuickView} />
 
             <div className="relative w-full max-w-[880px] bg-white shadow-2xl overflow-hidden z-10 flex flex-col md:flex-row items-center max-h-[90vh]">
@@ -50,13 +57,13 @@ function QuickViewModal() {
                 <button
                     type="button"
                     onClick={closeQuickView}
-                    aria-label="Close"
+                    aria-label="Close modal"
                     className="absolute top-4 right-4 z-20 w-8 h-8 rounded-full bg-[#f4f4f4] hover:bg-[#eaeaea] flex items-center justify-center text-[#212326] transition cursor-pointer"
                 >
                     <IoCloseOutline size={20} />
                 </button>
 
-                {/* SOL TƏRƏF: ŞƏKİL */}
+                {/* SOL TƏRƏF: ŞƏKİL QALEREYASI */}
                 <div className="md:w-1/2 bg-[#faf9f8] self-stretch relative flex items-center justify-center p-6 min-h-[320px]">
                     <img
                         src={mainImg}
@@ -64,41 +71,58 @@ function QuickViewModal() {
                         referrerPolicy="no-referrer"
                         className="max-h-[340px] w-auto object-contain transition-all duration-300 select-none"
                     />
+
+                    {currentImages.length > 1 && (
+                        <div className="absolute bottom-3 left-0 right-0 flex justify-center gap-1.5 px-4">
+                            {currentImages.map((_, idx) => (
+                                <button
+                                    key={idx}
+                                    type="button"
+                                    onClick={() => setActiveImg(idx)}
+                                    className={`transition-all duration-200 rounded-full cursor-pointer ${activeImg === idx ? 'w-4 h-1.5 bg-[#ea9393]' : 'w-1.5 h-1.5 bg-[#ccc]'
+                                        }`}
+                                />
+                            ))}
+                        </div>
+                    )}
                 </div>
 
-                {/* SAĞ TƏRƏF: MƏHSUL DETALLARI */}
-                <div className="md:w-1/2 p-6 md:p-8 overflow-y-auto max-h-[85vh] w-full">
+                {/* SAĞ TƏRƏF: DETALLAR */}
+                <div className="md:w-1/2 p-6 md:p-8 overflow-y-auto max-h-[85vh] w-full no-scrollbar">
                     <h2 className="font text-[22px] md:text-[24px] text-[#212326] leading-tight mb-2">
                         {quickViewProduct.title}
                     </h2>
 
                     {/* QİYMƏTLƏR */}
-                    <div className="font text-[20px] mb-1 flex items-center gap-2.5">
+                    <div className="font text-[20px] mb-1.5 flex items-center gap-2.5">
                         {originalPrice !== null && originalPrice > finalPrice && (
                             <span className="text-[#999] line-through text-[16px]">
                                 {formatPrice(originalPrice)}
                             </span>
                         )}
-                        <span className="text-[#c78a99]">
+                        <span className="text-[#ea9393] font-medium">
                             {formatPrice(finalPrice)}
                         </span>
                         {originalPrice !== null && originalPrice > finalPrice && (
-                            <span className="border border-[#c78a99] text-[#c78a99] text-[10px] px-1.5 py-0.5 uppercase tracking-wider font-semibold">
+                            <span className="bg-[#ea9393] text-white text-[10px] px-1.5 py-0.5 uppercase tracking-wider font-semibold">
                                 {discountPercent > 0 ? `${discountPercent}% OFF` : 'SALE'}
                             </span>
                         )}
                     </div>
 
                     <p className="dmsans text-[12px] text-[#888] mb-5">
-                        <span className="underline">Shipping</span> calculated at checkout.
+                        <Link to="/shipping-policy" onClick={closeQuickView} className="underline hover:text-[#212326]">
+                            Shipping
+                        </Link>{' '}
+                        calculated at checkout.
                     </p>
 
-                    {/* RƏNG VƏ YA OPTION SEÇİMİ */}
+                    {/* RƏNG VƏ YA SEÇİM */}
                     {variants.length > 0 && (
                         <div className="mb-5">
                             <p className="dmsans text-[12px] text-[#555] mb-2 font-medium">
                                 <span className="uppercase font-semibold tracking-wider">
-                                    {variants.some(v => v.color) ? 'COLOR' : 'OPTION'}
+                                    {variants.some((v) => v.color) ? 'Color' : 'Option'}
                                 </span>
                                 {' — '}
                                 <span className="text-[#212326] font-normal">{currentVariant?.name}</span>
@@ -106,7 +130,6 @@ function QuickViewModal() {
 
                             <div className="flex flex-wrap gap-2 items-center">
                                 {variants.map((v, i) => {
-                                    // 1. Əgər rəngdirsə (dairəvi rəng swatch-ı)
                                     if (v.color) {
                                         return (
                                             <button
@@ -118,8 +141,8 @@ function QuickViewModal() {
                                                 }}
                                                 title={v.name}
                                                 className={`w-6 h-6 rounded-full p-[2px] border transition-all duration-200 cursor-pointer ${activeVariant === i
-                                                    ? 'border-[#c78a99] scale-110'
-                                                    : 'border-transparent hover:border-[#ddd]'
+                                                        ? 'border-[#ea9393] scale-110'
+                                                        : 'border-transparent hover:border-[#ddd]'
                                                     }`}
                                             >
                                                 <span
@@ -130,7 +153,6 @@ function QuickViewModal() {
                                         );
                                     }
 
-                                    // 2. Əgər rəng yoxdursa (Mystery Bags kimi mətn/məbləğ düymələri)
                                     return (
                                         <button
                                             key={i}
@@ -140,8 +162,8 @@ function QuickViewModal() {
                                                 setActiveImg(0);
                                             }}
                                             className={`px-3 py-1.5 text-[12px] dmsans border transition font-medium cursor-pointer ${activeVariant === i
-                                                ? 'border-[#ea9393] bg-[#ea9393] text-white'
-                                                : 'border-[#ddd] text-[#3f3c39] hover:border-[#ea9393] bg-white'
+                                                    ? 'border-[#ea9393] bg-[#ea9393] text-white'
+                                                    : 'border-[#ddd] text-[#3f3c39] hover:border-[#ea9393] bg-white'
                                                 }`}
                                         >
                                             {v.name}
@@ -152,23 +174,23 @@ function QuickViewModal() {
                         </div>
                     )}
 
-                    {/* SAY ARTIRMA VƏ ADD TO CART */}
+                    {/* SAY VƏ SƏBƏTƏ ƏLAVƏ ET */}
                     <div className="flex items-center gap-3 mb-5">
                         <div className="flex items-center border border-[#ddd] bg-white h-10">
                             <button
                                 type="button"
                                 onClick={() => setQty(Math.max(1, qty - 1))}
-                                className="w-8 h-full flex items-center justify-center text-lg text-[#3f3c39] hover:bg-[#f5f5f5] transition cursor-pointer"
+                                className="w-8 h-full flex items-center justify-center text-base text-[#333] hover:bg-[#f5f5f5] transition cursor-pointer"
                             >
                                 −
                             </button>
-                            <span className="w-8 text-center dmsans text-[14px] text-[#212326] select-none">
+                            <span className="w-8 text-center dmsans text-[14px] text-[#212326] select-none font-medium">
                                 {qty}
                             </span>
                             <button
                                 type="button"
                                 onClick={() => setQty(qty + 1)}
-                                className="w-8 h-full flex items-center justify-center text-lg text-[#3f3c39] hover:bg-[#f5f5f5] transition cursor-pointer"
+                                className="w-8 h-full flex items-center justify-center text-base text-[#333] hover:bg-[#f5f5f5] transition cursor-pointer"
                             >
                                 +
                             </button>
@@ -180,40 +202,38 @@ function QuickViewModal() {
                                 addToBasket(quickViewProduct, activeVariant, qty, false);
                                 closeQuickView();
                             }}
-                            className="flex-1 h-10 bg-[#ea9393] hover:bg-[#d88080] text-white font uppercase text-[12px] tracking-[2px] transition flex items-center justify-center font-semibold cursor-pointer"
+                            className="flex-1 h-10 bg-[#ea9393] hover:bg-[#d88080] text-white font uppercase text-[12px] tracking-[2px] transition flex items-center justify-center font-medium cursor-pointer"
                         >
                             Add to Cart
                         </button>
                     </div>
 
-                    {/* ACCORDION: PRODUCT DESCRIPTION */}
+                    {/* ACCORDION: DESCRIPTION */}
                     <div className="border-t border-[#eee] py-3">
                         <button
                             type="button"
                             onClick={() => setDescOpen(!descOpen)}
-                            className="w-full flex items-center justify-between text-[11px] uppercase tracking-[2px] text-[#212326] font-semibold cursor-pointer"
+                            className="w-full flex items-center justify-between text-[11px] uppercase tracking-[1.5px] text-[#212326] font-semibold cursor-pointer"
                         >
-                            <span className="flex items-center gap-2">
-                                <span>△</span> PRODUCT DESCRIPTION
-                            </span>
+                            <span>Product Description</span>
                             {descOpen ? <HiOutlineChevronUp size={16} /> : <HiOutlineChevronDown size={16} />}
                         </button>
 
                         {descOpen && (
-                            <p className="dmsans text-[13px] text-[#666] mt-2.5 leading-relaxed">
+                            <p className="dmsans text-[13px] text-[#666] mt-2.5 leading-relaxed whitespace-pre-line">
                                 {currentVariant?.description || quickViewProduct.description || quickViewProduct.subtitle || "No description available."}
                             </p>
                         )}
                     </div>
 
                     {/* VIEW FULL DETAILS LINK */}
-                    <div className="border-t border-[#eee] pt-3">
+                    <div className="border-t border-[#eee] pt-3.5">
                         <Link
-                            to={`/products/${toSlug(quickViewProduct.title)}`}
+                            to={fullDetailsUrl}
                             onClick={closeQuickView}
-                            className="inline-flex items-center gap-2 text-[11px] uppercase tracking-[2px] text-[#212326] hover:text-[#c78a99] font-semibold transition cursor-pointer"
+                            className="inline-flex items-center gap-1.5 text-[11px] uppercase tracking-[1.5px] text-[#212326] hover:text-[#ea9393] font-semibold transition cursor-pointer"
                         >
-                            <span>→</span> VIEW FULL DETAILS
+                            <span>View Full Details →</span>
                         </Link>
                     </div>
 

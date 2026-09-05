@@ -2,23 +2,17 @@ import React, { useRef } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation, Mousewheel } from 'swiper/modules';
 import { Link } from 'react-router';
-import { TbShoppingBag } from "react-icons/tb";
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/navigation';
 import '../../App.css';
 import readyImg from '../../assets/img/ready-to-gift.webp';
-import { toSlug } from '../service/slug';
 import { useProducts } from '../context/ProductContext';
-import { useCurrency } from '../context/CurrencyContext';
-import { getProductPriceDetails } from '../service/price';
-import { useBasket } from '../context/BasketContext';
+import ProductCard from '../common/ProductCard';
 
 function ReadyToGift() {
-    const { readyGiftProducts, loading, openQuickView } = useProducts();
-    const { formatPrice } = useCurrency();
+    const { readyGiftProducts, loading } = useProducts();
     const swiperRef = useRef(null);
-    const { addToBasket } = useBasket();
 
     if (loading) return <p className="text-center py-10 font text-gray-500">Loading...</p>;
     if (!readyGiftProducts || readyGiftProducts.length === 0) return null;
@@ -69,82 +63,11 @@ function ReadyToGift() {
                             }}
                             className="readyGiftSwiper !items-start !pb-16 [&_.swiper-pagination]:!bottom-1 [&_.swiper-pagination-bullet-active]:!bg-[#ea9393]"
                         >
-                            {readyGiftProducts.map((product) => {
-                                const mainImg = product.images?.[0] || product.img || "";
-                                const { finalPrice, originalPrice, discountPercent } = getProductPriceDetails(product);
-                                const valueTag = product.value || (originalPrice ? `Value ${formatPrice(Math.round(originalPrice))}` : null);
-
-                                return (
-                                    <SwiperSlide key={product.id} className="!h-auto">
-                                        <div className="group flex flex-col h-full">
-                                            <div className="relative overflow-hidden bg-white aspect-[4/5]">
-                                                <Link to={`/products/${toSlug(product.title)}`}>
-                                                    <img
-                                                        src={mainImg}
-                                                        alt={product.title}
-                                                        referrerPolicy="no-referrer"
-                                                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                                                    />
-
-
-                                                    <div className="absolute top-1 right-1 p-1 sm:top-3 sm:right-3 flex flex-col gap-1 z-10">
-                                                        {valueTag && (
-                                                            <span className="bg-[#e8989a] text-white text-[8px] sm:text-[11px] tracking-[0.5px] sm:tracking-[1px] uppercase px-1.5 py-0.5 sm:px-2.5 sm:py-1 w-fit font-medium leading-tight rounded-[2px]">
-                                                                {valueTag}
-                                                            </span>
-                                                        )}
-                                                        {discountPercent > 0 && !valueTag && (
-                                                            <span className="bg-[#e8989a] text-white text-[8px] sm:text-[10px] tracking-[0.3px] sm:tracking-[0.5px] uppercase px-1.5 py-0.5 sm:px-2 sm:py-0.5 w-fit font-medium leading-tight rounded-[2px]">
-                                                                {discountPercent}% OFF
-                                                            </span>
-                                                        )}
-                                                    </div>
-
-                                                    <button
-                                                        type="button"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            openQuickView(product);
-                                                        }}
-                                                        className="hidden lg:block absolute bottom-0 left-0 right-0 bg-[#e8989a] text-white font uppercase text-[12px] tracking-[2px] py-3 translate-y-full group-hover:translate-y-0 transition-transform duration-300 hover:bg-[#d88080] z-20 cursor-pointer"
-                                                    >
-                                                        Choose Options
-                                                    </button>
-                                                    <button
-                                                        type="button"
-                                                        aria-label="Add to cart"
-                                                        onClick={(e) => {
-                                                            e.preventDefault();
-                                                            addToBasket(product, 0, 1, false);
-                                                        }}
-                                                        className="xl:hidden flex items-center justify-center absolute bottom-3 right-3 w-9 h-9 rounded-full bg-[#dd9c9c] text-white shadow-sm z-20 cursor-pointer"
-                                                    >
-                                                        <TbShoppingBag className="text-[18px]" />
-                                                    </button>
-                                                </Link>
-                                            </div>
-
-                                            <div className="text-center py-4 flex-1 flex flex-col justify-between">
-                                                <h3 className="font text-[16px] text-[#212326] mb-2 tracking-[1.2px] leading-tight px-1 line-clamp-1">
-                                                    <Link to={`/products/${toSlug(product.title)}`} className="hover:text-[#c78a99] transition">
-                                                        {product.title}
-                                                    </Link>
-                                                </h3>
-                                                <p className="font text-[15px]">
-                                                    {originalPrice !== null && originalPrice > finalPrice && (
-                                                        <span className="text-[#999] line-through mr-2 text-[15px]">
-                                                            {formatPrice(originalPrice)}
-                                                        </span>
-                                                    )}
-                                                    <span className="text-[#c78a99] text-[17px] font-medium">
-                                                        {formatPrice(finalPrice)}
-                                                    </span>
-                                                </p>
-                                            </div>
-                                        </div>
-                                    </SwiperSlide>
-                                );
-                            })}
+                            {readyGiftProducts.map((product) => (
+                                <SwiperSlide key={product.id} className="!h-auto">
+                                    <ProductCard product={product} bg="bg-white" />
+                                </SwiperSlide>
+                            ))}
                         </Swiper>
 
                         {/* Desktop Oxları */}
@@ -152,7 +75,7 @@ function ReadyToGift() {
                             type="button"
                             onClick={() => swiperRef.current?.slidePrev()}
                             aria-label="Previous"
-                            className="hidden lg:flex items-center justify-center absolute top-[35%] -translate-y-1/2 left-1 z-10 w-10 h-10 rounded-full bg-white shadow-md text-[#6b6b6b] hover:text-[#c78a99] transition cursor-pointer"
+                            className="hidden lg:flex items-center justify-center absolute top-[35%] -translate-y-1/2 left-1 z-10 w-10 h-10 rounded-full bg-white shadow-md text-[#6b6b6b] hover:text-[#ea9393] transition cursor-pointer"
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="15 18 9 12 15 6" />
@@ -162,7 +85,7 @@ function ReadyToGift() {
                             type="button"
                             onClick={() => swiperRef.current?.slideNext()}
                             aria-label="Next"
-                            className="hidden lg:flex items-center justify-center absolute top-[35%] -translate-y-1/2 right-1 z-10 w-10 h-10 rounded-full bg-white shadow-md text-[#6b6b6b] hover:text-[#c78a99] transition cursor-pointer"
+                            className="hidden lg:flex items-center justify-center absolute top-[35%] -translate-y-1/2 right-1 z-10 w-10 h-10 rounded-full bg-white shadow-md text-[#6b6b6b] hover:text-[#ea9393] transition cursor-pointer"
                         >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
                                 <polyline points="9 18 15 12 9 6" />

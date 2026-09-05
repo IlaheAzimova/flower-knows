@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { getProducts } from '../service/api'; // və ya '../services/api' (faylı harada yaratmısansa)
+import { getProducts } from '../service/api';
 
 const ProductContext = createContext();
 
@@ -11,9 +11,17 @@ export function ProductProvider({ children }) {
 
     // MODAL STATE
     const [quickViewProduct, setQuickViewProduct] = useState(null);
+    const [quickViewInitialVariant, setQuickViewInitialVariant] = useState(0);
 
-    const openQuickView = (product) => setQuickViewProduct(product);
-    const closeQuickView = () => setQuickViewProduct(null);
+    const openQuickView = (product, variantIndex = 0) => {
+        setQuickViewProduct(product);
+        setQuickViewInitialVariant(variantIndex);
+    };
+
+    const closeQuickView = () => {
+        setQuickViewProduct(null);
+        setQuickViewInitialVariant(0);
+    };
 
     useEffect(() => {
         getProducts()
@@ -39,6 +47,7 @@ export function ProductProvider({ children }) {
                 limitedSaleProducts,
                 bestsellerProducts,
                 quickViewProduct,
+                quickViewInitialVariant,
                 openQuickView,
                 closeQuickView
             }}
